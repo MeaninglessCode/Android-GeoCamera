@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GeoCameraApp</string>
+    <string name="title_activity_maps">Geo Camera</string>
+    <string name="map_info_window_image_content_description">Picture taken at the location indicated by the marker</string>
+</resources>
