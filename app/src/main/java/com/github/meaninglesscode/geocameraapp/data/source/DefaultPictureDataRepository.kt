@@ -126,8 +126,12 @@ class DefaultPictureDataRepository @Inject constructor(
      * Deletes all [PictureData] from the [PictureDataDataSource]s that is associated with pictures
      * that have since been deleted from disk as well as removing them from [cachedPictureData].
      */
-    override suspend fun clearDeletedPictureData() {
-        TODO("Not yet implemented")
+    override suspend fun clearDeletedPictureData(pictureUris: List<String>) {
+        withContext(ioDispatcher) {
+            coroutineScope {
+                launch { pictureDataLocalDataSource.clearDeletedPictureData(pictureUris) }
+            }
+        }
     }
 
     /**

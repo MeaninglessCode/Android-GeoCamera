@@ -86,17 +86,16 @@ class MapsFragment: DaggerFragment(), OnMapReadyCallback {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         viewModel.markerPictureData.observe(this, {
+            // Clear markers
+            mMap.clear()
+
             it.forEach { pictureData ->
-                    if (!pictureData.displayedOnMap) {
-                        val markerOptions = MarkerOptions()
-                                .position(pictureData.getLatLng())
+                val markerOptions = MarkerOptions()
+                    .position(pictureData.getLatLng())
 
-                        val marker = mMap.addMarker(markerOptions)
-
-                        pictureData.displayedOnMap = true
-                        marker.tag = pictureData
-                    }
-                }
+                val marker = mMap.addMarker(markerOptions)
+                marker.tag = pictureData
+            }
         })
     }
 
@@ -194,6 +193,7 @@ class MapsFragment: DaggerFragment(), OnMapReadyCallback {
      */
     override fun onResume() {
         super.onResume()
+        viewModel.clearDeletedPictureData(requireActivity())
 
         if (!hasPermission(requireActivity(), CAMERA)) {
             checkPermission(CAMERA, Requests.REQUEST_CAMERA_PERMISSION,
@@ -261,7 +261,7 @@ class MapsFragment: DaggerFragment(), OnMapReadyCallback {
         mMap = googleMap
         mMap.setInfoWindowAdapter(MapInfoWindowAdapter(requireContext()))
 
-        viewModel.initializePictureData()
+        viewModel.clearDeletedPictureData(requireActivity())
         enableLocationServices()
     }
 

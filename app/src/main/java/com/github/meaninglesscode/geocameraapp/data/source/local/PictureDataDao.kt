@@ -47,6 +47,15 @@ interface PictureDataDao {
     suspend fun updatePictureData(pictureData: PictureData): Int
 
     /**
+     * Delete all [PictureData] from the "picture_data" table where the URI of the row is not
+     * contained in [pictureUris].
+     *
+     * @param [pictureUris] [List] of [String] URIs to check against
+     */
+    @Query("DELETE FROM picture_data WHERE uri NOT IN(:pictureUris)")
+    suspend fun clearDeletedPictureData(pictureUris: List<String>)
+
+    /**
      * Delete all data from the "picture_data" table with a URI matching the given [uri]. Should
      * always delete a single data because [uri] is the primary key and must be unique for data to
      * be inserted into the table.

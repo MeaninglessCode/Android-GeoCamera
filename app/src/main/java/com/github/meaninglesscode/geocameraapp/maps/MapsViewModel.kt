@@ -40,7 +40,7 @@ class MapsViewModel @Inject constructor(
     val snackbarMessage: LiveData<Event<Int>> = _snackbarText
 
     // Live data used for maintaining the picture data associated with markers drawn on the map
-    private val _markerPictureDataList: MutableList<PictureData> = mutableListOf()
+    private var _markerPictureDataList: MutableList<PictureData> = mutableListOf()
     private val _markerPictureData = MutableLiveData<List<PictureData>>()
     val markerPictureData: LiveData<List<PictureData>> = _markerPictureData
 
@@ -78,10 +78,23 @@ class MapsViewModel @Inject constructor(
         val allPictureData = pictureDataRepository.getAllPictureData()
 
         if (allPictureData.succeeded && (allPictureData is Result.Success)) {
-            for (pictureData in allPictureData.data)
-                _markerPictureDataList.add(pictureData)
-
+            _markerPictureDataList = allPictureData.data.toMutableList()
             _markerPictureData.value = _markerPictureDataList
         }
+    }
+
+    /**
+     * Method to clear all picture data from the database associated with pictures that have
+     * been deleted from disk.
+     */
+    fun clearDeletedPictureData(activity: Activity) = viewModelScope.launch {
+        val filesToCheck = mutableListOf<String>()
+
+        activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.walk()?.forEach {
+            filesToCheck.add(it.absolutePath)
+        }
+
+        pictureDataRepository.clearDeletedPictureData(filesToCheck)
+        initializePictureData()
     }
 }

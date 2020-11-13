@@ -39,7 +39,7 @@ interface PictureDataRepository {
      * Method to be implemented in order to clear all [PictureData] associated with files that have
      * since been deleted from disk.
      */
-    suspend fun clearDeletedPictureData()
+    suspend fun clearDeletedPictureData(pictureUris: List<String>)
 
     /**
      * Method to be implemented in order to clear all [PictureData] from the Room database.

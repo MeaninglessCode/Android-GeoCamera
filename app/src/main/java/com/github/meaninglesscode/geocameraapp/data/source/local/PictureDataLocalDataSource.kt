@@ -68,9 +68,11 @@ class PictureDataLocalDataSource internal constructor(
     /**
      * Method to clear all [PictureData] associated with pictures that have since been deleted
      * from disk.
+     *
+     * @param [pictureUris] [List] of [String] URIs of pictures that still exist on disk
      */
-    override suspend fun clearDeletedPictureData() {
-        TODO("Not yet implemented")
+    override suspend fun clearDeletedPictureData(pictureUris: List<String>) = withContext(ioDispatcher) {
+        pictureDataDao.clearDeletedPictureData(pictureUris)
     }
 
     /**
